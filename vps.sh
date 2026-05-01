@@ -1,87 +1,92 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+set -e
 
-# ==============================
-#        RRSOFFICIALS VPS
-# ==============================
+# ===== CHECK ROOT =====
+if [ "$EUID" -ne 0 ]; then
+  echo "❌ Please run as root"
+  exit
+fi
 
 # ===== COLORS =====
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
+BLUE='\033[1;34m'
 CYAN='\033[0;36m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
 clear
+echo -e "${CYAN}🚀 RRSOFFICIALS DEBIAN PANEL${NC}"
+echo
 
-echo -e "${CYAN}===================================="
-echo -e "      :rocket: RRSOFFICIALS VPS SETUP"
-echo -e "====================================${NC}"
-echo ""
+# ===== INSTALL BASIC PACKAGES =====
+echo -e "${BLUE}📦 Installing dependencies...${NC}"
+apt update -y
+apt install -y curl wget git sudo unzip ca-certificates lsb-release
 
-# ===== CONFIG =====
-URL="https://rrsofficials-api.workers.dev"
-HOST="rrsofficials-api.workers.dev"
-NETRC="${HOME}/.netrc"
+# ===== MENU =====
+while true; do
+echo -e "${YELLOW}=========== MENU ===========${NC}"
+echo "1) Install Panel"
+echo "2) Install Wings"
+echo "3) Install Cloudflare Tunnel"
+echo "4) Install Tailscale"
+echo "5) Install Blueprint"
+echo "6) Install Nebula Theme"
+echo "7) Install Minecraft Tools"
+echo "0) Exit"
+echo
 
-# ===== helper =====
-b64d() { printf '%s' "$1" | base64 -d; }
+read -p "Choose option: " opt
 
-# ===== credentials (encoded) =====
-USER_B64="UlJTT0ZGSUNJQUxT"
-PASS_B64="UlJTT0ZGSUNJQUxT"
+case $opt in
 
-USER_RAW="$(b64d "$USER_B64")"
-PASS_RAW="$(b64d "$PASS_B64")"
+1)
+echo -e "${GREEN}Installing Panel...${NC}"
+bash <(curl -s https://pterodactyl-installer.se)
+;;
 
-if [ -z "$USER_RAW" ] || [ -z "$PASS_RAW" ]; then
-  echo -e "${RED}Decode failed${NC}"
-  exit 1
-fi
+2)
+echo -e "${GREEN}Installing Wings...${NC}"
+bash <(curl -s https://pterodactyl-installer.se)
+;;
 
-# ===== check curl =====
-command -v curl >/dev/null 2>&1 || {
-  echo -e "${RED}curl not installed${NC}"
-  exit 1
-}
+3)
+echo -e "${BLUE}Installing Cloudflare Tunnel...${NC}"
+curl -fsSL https://developers.cloudflare.com/cloudflare-one/static/documentation/connections/connect-apps/install-and-setup/installation/linux.sh | bash
+;;
 
-# ===== system update =====
-echo -e "${GREEN}[+] Updating system...${NC}"
-sudo apt update -y && sudo apt upgrade -y
+4)
+echo -e "${CYAN}Installing Tailscale...${NC}"
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
+;;
 
-echo -e "${GREEN}[+] Installing packages...${NC}"
-sudo apt install -y curl wget git unzip nano screen htop neofetch
+5)
+echo -e "${YELLOW}Installing Blueprint...${NC}"
+bash <(curl -s https://raw.githubusercontent.com/BlueprintFramework/installer/main/install.sh)
+;;
 
-# ===== netrc setup =====
-echo -e "${GREEN}[+] Setting authentication...${NC}"
+6)
+echo -e "${GREEN}Installing Nebula Theme...${NC}"
+bash <(curl -s https://raw.githubusercontent.com/Nebula-Theme/pterodactyl/main/install.sh)
+;;
 
-touch "$NETRC"
-chmod 600 "$NETRC"
+7)
+echo -e "${CYAN}Installing Minecraft tools...${NC}"
+mkdir -p /home/mc-tools
+cd /home/mc-tools
+git clone https://github.com/Pterodactyl-Panel/egg-minecraft.git
+echo -e "${GREEN}✔ Minecraft tools installed${NC}"
+;;
 
-tmpfile="$(mktemp)"
-grep -vE "machine ${HOST}" "$NETRC" > "$tmpfile" || true
-mv "$tmpfile" "$NETRC"
+0)
+exit
+;;
 
-{
-  printf 'machine %s login %s password %s\n' "$HOST" "$USER_RAW" "$PASS_RAW"
-} >> "$NETRC"
+*)
+echo -e "${RED}Invalid option${NC}"
+;;
 
-# ===== remote execution =====
-echo -e "${GREEN}[+] Downloading RRSOFFICIALS module...${NC}"
-
-script_file="$(mktemp)"
-trap 'rm -f "$script_file"' EXIT
-
-if curl -fsS --netrc -o "$script_file" "$URL"; then
-  bash "$script_file"
-else
-  echo -e "${RED}Remote download failed${NC}"
-  exit 1
-fi
-
-# ===== finish =====
-echo ""
-echo -e "${CYAN}===================================="
-echo -e "   :white_check_mark: VPS READY - RRSOFFICIALS"
-echo -e "====================================${NC}"
-echo ""
+esac
+done
