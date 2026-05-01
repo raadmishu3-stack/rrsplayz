@@ -1,8 +1,8 @@
-##!/bin/bash
+#!/bin/bash
 set -e
 
 # =============================
-# 🚀 RRS OFFICIAL VPS PANEL
+# 🚀 RRS VPS CONTROL PANEL
 # =============================
 
 # 🎨 COLORS
@@ -14,169 +14,170 @@ CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-# 📁 BASE FOLDER
-BASE="$HOME/rrs-panel"
-BOTS="$BASE/bots"
-TOOLS="$BASE/tools"
-THEMES="$BASE/themes"
-
-mkdir -p "$BOTS" "$TOOLS" "$THEMES"
-
 # ================= HEADER =================
 header() {
-    clear
-    echo -e "${CYAN}"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "🚀 RRS OFFICIAL VPS PANEL"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "${PURPLE}1️⃣ VPS Info"
-    echo -e "2️⃣ 🤖 Bot Manager"
-    echo -e "${BLUE}3️⃣ 🌐 Cloudflare Info"
-    echo -e "4️⃣ 🎨 Theme Selector"
-    echo -e "${YELLOW}5️⃣ 📘 Blueprint Info"
-    echo -e "6️⃣ 🛠 Minecraft Tools"
-    echo -e "7️⃣ 🤖 Discord Bot Info"
-    echo -e "8️⃣ 🧩 Tools Menu"
-    echo -e "${RED}0️⃣ Exit"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "${NC}"
+clear
+echo -e "${CYAN}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 RRS VPS CONTROL PANEL"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${BLUE}1️⃣ VPS Install"
+echo -e "${PURPLE}2️⃣ Windows Install"
+echo -e "${CYAN}3️⃣ 🌐 Cloudflare Setup"
+echo -e "${YELLOW}4️⃣ 🤖 Bot Manager"
+echo -e "${GREEN}5️⃣ 🎨 Theme Selector"
+echo -e "${BLUE}6️⃣ 📘 Blueprint Tools"
+echo -e "${PURPLE}7️⃣ 🛠 Minecraft Tools"
+echo -e "${YELLOW}8️⃣ 🤖 Discord Bot Info"
+echo -e "${CYAN}9️⃣ 🧩 Tealsceal Install"
+echo -e "${RED}0️⃣ Exit"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${NC}"
 }
 
 # ================= STATUS =================
 info(){ echo -e "${BLUE}ℹ️ $1${NC}"; }
 ok(){ echo -e "${GREEN}✔ $1${NC}"; }
 warn(){ echo -e "${YELLOW}⚠ $1${NC}"; }
-error(){ echo -e "${RED}❌ $1${NC}"; }
 
-# ================= VPS INFO =================
-vps_info() {
-    echo -e "${CYAN}📊 VPS INFORMATION${NC}"
-    uname -a
-    echo ""
-    free -h
-    echo ""
-    df -h
+# ================= VPS INSTALL =================
+vps_install() {
+echo "🚀 VPS INSTALL GUIDE"
+echo "----------------------"
+echo "sudo apt update"
+echo "sudo apt upgrade -y"
+echo "install git, curl, wget"
+echo ""
+info "Manual setup required"
 }
 
-# ================= BOT MANAGER =================
-bot_menu() {
-    echo "🤖 BOT MANAGER"
-    echo "1) Create Bot"
-    echo "2) Delete Bot"
-    echo "3) List Bots"
-    read -p "Select: " c
-
-    case $c in
-        1)
-            read -p "Bot name: " n
-            mkdir -p "$BOTS/$n"
-            echo "console.log('Bot $n running')" > "$BOTS/$n/index.js"
-            ok "Bot created ✔"
-            ;;
-        2)
-            read -p "Bot name: " n
-            rm -rf "$BOTS/$n"
-            ok "Bot deleted ✔"
-            ;;
-        3)
-            ls "$BOTS"
-            ;;
-    esac
+# ================= WINDOWS INSTALL =================
+windows_install() {
+echo "🪟 WINDOWS INSTALL ON VPS"
+echo "----------------------"
+echo "Use QEMU/KVM"
+echo "ISO required (Windows)"
+echo "Minimum RAM: 4GB"
+echo ""
+info "No auto install allowed"
 }
 
 # ================= CLOUDFLARE =================
-cloudflare_menu() {
-    echo -e "${BLUE}🌐 CLOUDFLARE GUIDE${NC}"
-    echo "✔ Add domain to Cloudflare"
-    echo "✔ Change nameservers"
-    echo "✔ Enable proxy (orange cloud)"
-    echo ""
-    info "No auto-install allowed — manual setup required"
+cloudflare_setup() {
+echo "🌐 CLOUDFLARE SETUP"
+echo "----------------------"
+echo "1. Add domain"
+echo "2. Change nameservers"
+echo "3. Enable proxy (orange cloud)"
+echo "4. SSL → Full"
 }
 
-# ================= THEMES =================
+# ================= BOT =================
+bot_menu() {
+echo "🤖 BOT MANAGER"
+echo "1) Create Bot"
+echo "2) Delete Bot"
+read -p "Select: " c
+
+case $c in
+1)
+read -p "Bot name: " n
+mkdir -p bots/$n
+echo "console.log('Bot $n running')" > bots/$n/index.js
+ok "Bot created"
+;;
+2)
+read -p "Bot name: " n
+rm -rf bots/$n
+ok "Bot deleted"
+;;
+esac
+}
+
+# ================= THEME =================
 theme_menu() {
-    echo "🎨 THEMES"
-    echo "1) 🌌 Nebula"
-    echo "2) 🌑 Dark"
-    echo "3) 📘 Blueprint"
+echo "🎨 THEMES"
+echo "1) 🌌 Nebula"
+echo "2) 🌑 Dark"
+read -p "Select: " t
 
-    read -p "Select: " t
-
-    case $t in
-        1) ok "Nebula theme selected 🌌" ;;
-        2) ok "Dark theme selected 🌑" ;;
-        3) ok "Blueprint theme selected 📘" ;;
-        *) error "Invalid option" ;;
-    esac
+case $t in
+1) ok "Nebula theme selected 🌌" ;;
+2) ok "Dark theme selected 🌑" ;;
+esac
 }
 
 # ================= BLUEPRINT =================
 blueprint_menu() {
-    echo "📘 BLUEPRINT INFO"
-    echo "✔ Web UI structure design"
-    echo "✔ Dashboard concept"
-    echo "✔ Plugin system idea"
-    echo "✔ API system architecture"
+echo "📘 BLUEPRINT SYSTEM"
+echo "----------------------"
+echo "✔ Dashboard UI concept"
+echo "✔ API system design"
+echo "✔ Plugin architecture"
 }
 
 # ================= MINECRAFT =================
 mc_menu() {
-    echo "🛠 MINECRAFT TOOLS"
-    echo "1) server.properties info"
-    echo "2) plugin folder guide"
-    echo "3) player manager info"
-
-    read -p "Select: " c
-
-    case $c in
-        1) info "Edit server.properties manually" ;;
-        2) info "Put .jar files inside plugins folder" ;;
-        3) info "Use LuckPerms plugin for players" ;;
-    esac
+echo "🛠 MINECRAFT TOOLS"
+echo "----------------------"
+echo "✔ plugins folder"
+echo "✔ server.properties"
+echo "✔ LuckPerms system"
 }
 
 # ================= DISCORD BOT =================
 discord_menu() {
-    echo "🤖 DISCORD BOT"
-    echo "✔ Install: npm install discord.js"
-    echo "✔ Token must be added manually in code"
+echo "🤖 DISCORD BOT"
+echo "----------------------"
+echo "Install: npm install discord.js"
+echo "Token must be added manually"
 }
 
-# ================= TOOLS =================
-tools_menu() {
-    echo "🧩 TOOLS"
-    echo "1) Register System"
-    echo "2) Player Manager"
-    echo "3) MC Properties View"
+# ================= TEAL SCEAL INSTALL =================
+tealsceal_install() {
+echo "🧩 TEALSCEAL INSTALL"
+echo "----------------------"
 
-    read -p "Select: " t
+BASE="$HOME/tealsceal"
+mkdir -p "$BASE"/{core,ui,security,plugins}
 
-    case $t in
-        1) info "Register system = plugin based system" ;;
-        2) info "Use LuckPerms plugin" ;;
-        3) cat server.properties 2>/dev/null || warn "File not found" ;;
-    esac
+echo "Creating system..."
+
+cat > "$BASE/core/config.sh" <<EOF
+SYSTEM_NAME=Tealsceal
+VERSION=1.0
+SECURITY=HIGH
+EOF
+
+cat > "$BASE/security/auth.sh" <<EOF
+#!/bin/bash
+echo "🔐 Login System Active"
+EOF
+
+chmod +x "$BASE/security/auth.sh"
+
+ok "Tealsceal installed at $BASE"
 }
 
 # ================= MAIN LOOP =================
 while true; do
-    header
-    read -p "👉 Select option: " opt
+header
+read -p "👉 Select option: " opt
 
-    case $opt in
-        1) vps_info ;;
-        2) bot_menu ;;
-        3) cloudflare_menu ;;
-        4) theme_menu ;;
-        5) blueprint_menu ;;
-        6) mc_menu ;;
-        7) discord_menu ;;
-        8) tools_menu ;;
-        0) echo "👋 Exit"; exit ;;
-        *) error "Invalid option" ;;
-    esac
+case $opt in
+1) vps_install ;;
+2) windows_install ;;
+3) cloudflare_setup ;;
+4) bot_menu ;;
+5) theme_menu ;;
+6) blueprint_menu ;;
+7) mc_menu ;;
+8) discord_menu ;;
+9) tealsceal_install ;;
+0) echo "👋 Exit"; exit ;;
+*) echo "❌ Invalid option" ;;
+esac
 
-    echo ""
-    read -p "Press Enter..."
+echo ""
+read -p "Press Enter..."
 done
