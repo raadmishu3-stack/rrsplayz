@@ -14,23 +14,29 @@ MAGENTA='\033[1;35m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
-# HEADER
+# BIG HEADER
 header() {
 clear
 echo -e "${CYAN}"
-echo "╔══════════════════════════════════════════════╗"
-echo "║        🚀 RRS PRO VPS CONTROL PANEL         ║"
-echo "╠══════════════════════════════════════════════╣"
-echo "║  1️⃣  PANEL INSTALL                        ║"
-echo "║  2️⃣  WINGS INSTALL                        ║"
-echo "║  3️⃣  CLOUDFLARE SETUP                     ║"
-echo "║  4️⃣  BLUEPRINT INSTALL                    ║"
-echo "║  5️⃣  TEALSCALE INSTALL                    ║"
-echo "║  6️⃣  THEME SELECTOR                       ║"
-echo "║  7️⃣  TOOLS                                ║"
-echo "║  8️⃣  MINECRAFT / DISCORD                  ║"
-echo "║  0️⃣  EXIT                                 ║"
-echo "╚══════════════════════════════════════════════╝"
+echo "██████╗ ██████╗ ███████╗"
+echo "██╔══██╗██╔══██╗██╔════╝"
+echo "██████╔╝██████╔╝█████╗  "
+echo "██╔══██╗██╔═══╝ ██╔══╝  "
+echo "██║  ██║██║     ███████╗"
+echo "╚═╝  ╚═╝╚═╝     ╚══════╝"
+echo ""
+echo "🚀 RRS PRO CONTROL PANEL 🚀"
+echo "════════════════════════════════════"
+echo "1️⃣ PANEL INSTALL"
+echo "2️⃣ WINGS"
+echo "3️⃣ CLOUDFLARE CONNECT"
+echo "4️⃣ BLUEPRINT"
+echo "5️⃣ TAILSCALE CONNECT"
+echo "6️⃣ THEMES"
+echo "7️⃣ TOOLS"
+echo "8️⃣ MC + DISCORD"
+echo "0️⃣ EXIT"
+echo "════════════════════════════════════"
 echo -e "${NC}"
 }
 
@@ -38,83 +44,89 @@ info(){ echo -e "${BLUE}ℹ $1${NC}"; }
 ok(){ echo -e "${GREEN}✔ $1${NC}"; }
 warn(){ echo -e "${YELLOW}⚠ $1${NC}"; }
 
-# ================= PANEL =================
-panel_menu(){
-while true; do
-clear
-echo "========== 🌐 PANEL INSTALL =========="
-echo "1) Pterodactyl Install"
-echo "2) PufferPanel Install"
-echo "0) 🔙 Back"
-read -p "Select: " p
-
-case $p in
-1)
-info "Installing Pterodactyl..."
-bash <(curl -s https://pterodactyl-installer.se)
-ok "Done"
-;;
-2)
-info "Installing PufferPanel..."
-curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | bash
-sudo apt install -y pufferpanel
-ok "Installed"
-;;
-0) break ;;
-*) warn "Invalid" ;;
-esac
-read -p "Press Enter..."
-done
-}
-
-# ================= WINGS =================
-wings_menu(){
-while true; do
-clear
-echo "========== 🪽 WINGS =========="
-echo "1) Install Docker"
-echo "2) Install Wings"
-echo "0) Back"
-read -p "Select: " w
-
-case $w in
-1)
-curl -s https://get.docker.com | bash
-ok "Docker installed"
-;;
-2)
-info "Follow official config after download"
-echo "https://pterodactyl.io/wings"
-;;
-0) break ;;
-*) warn "Invalid" ;;
-esac
-read -p "Press Enter..."
-done
-}
-
 # ================= CLOUDFLARE =================
 cloudflare_menu(){
 while true; do
 clear
-echo "========== 🌐 CLOUDFLARE =========="
-echo "1) Install Cloudflared Tunnel"
-echo "2) Run Tunnel"
-echo "0) Back"
+echo "🌐 ===== CLOUDFLARE CONNECT ===== 🌐"
+echo ""
+echo "1) Install cloudflared"
+echo "2) Connect using URL"
+echo "0) 🔙 Back"
+echo ""
+
 read -p "Select: " c
 
 case $c in
 1)
-wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
+info "Downloading cloudflared..."
+wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
 chmod +x cloudflared
-ok "Installed cloudflared"
+ok "Installed locally ✔"
 ;;
+
 2)
-./cloudflared tunnel --url http://localhost:80
+echo ""
+info "👉 Go Cloudflare → Zero Trust → Networks → Tunnels"
+info "👉 Create Tunnel → Debian → Copy the command URL"
+echo ""
+
+read -p "📋 Paste your URL: " url
+
+echo ""
+info "Connecting tunnel..."
+eval "$url"
+
+ok "Cloudflare Connected 🚀"
 ;;
+
 0) break ;;
-*) warn "Invalid" ;;
+*) warn "Invalid option" ;;
 esac
+
+read -p "Press Enter..."
+done
+}
+
+# ================= TAILSCALE =================
+tailscale_menu(){
+while true; do
+clear
+echo "🔗 ===== TAILSCALE CONNECT ===== 🔗"
+echo ""
+echo "1) Install Tailscale"
+echo "2) Login & Connect"
+echo "0) 🔙 Back"
+echo ""
+
+read -p "Select: " t
+
+case $t in
+1)
+info "Installing Tailscale..."
+curl -fsSL https://tailscale.com/install.sh | sh
+ok "Installed ✔"
+;;
+
+2)
+info "Starting Tailscale..."
+tailscale up
+
+echo ""
+info "👉 If link shows → open it in browser"
+info "👉 Login → then return here"
+
+read -p "Press Enter after login..."
+
+tailscale status
+
+ok "Connected 🚀"
+;;
+
+0) break ;;
+*) warn "Invalid option" ;;
+esac
+
 read -p "Press Enter..."
 done
 }
@@ -123,76 +135,57 @@ done
 blueprint_menu(){
 while true; do
 clear
-echo "========== 📘 BLUEPRINT =========="
-echo "1) Create basic panel folder"
-echo "2) Run demo server"
+echo "📘 ===== BLUEPRINT PANEL ===== 📘"
+echo ""
+echo "1) Create Panel"
+echo "2) Run Panel (Port 8080)"
 echo "0) Back"
+echo ""
+
 read -p "Select: " b
 
 case $b in
 1)
-mkdir -p blueprint-panel
-cd blueprint-panel
-echo "<h1>Blueprint Panel</h1>" > index.html
-ok "Created"
+mkdir -p blueprint
+echo "<h1>RRS PANEL 🚀</h1>" > blueprint/index.html
+ok "Panel created ✔"
 ;;
+
 2)
+cd blueprint 2>/dev/null || warn "Create first!"
 python3 -m http.server 8080
 ;;
+
 0) break ;;
 *) warn "Invalid" ;;
 esac
+
 read -p "Press Enter..."
 done
 }
 
-# ================= TEALSCALE =================
-tealscale_menu(){
-while true; do
-clear
-echo "========== 🧩 TEALSCALE =========="
-echo "1) Install Node.js"
-echo "2) Setup Tealscale Project"
-echo "0) Back"
-read -p "Select: " t
-
-case $t in
-1)
-curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-sudo apt install -y nodejs
-ok "Node installed"
-;;
-2)
-mkdir tealscale
-cd tealscale
-npm init -y
-ok "Project created"
-;;
-0) break ;;
-*) warn "Invalid" ;;
-esac
-read -p "Press Enter..."
-done
-}
-
-# ================= THEME =================
+# ================= THEMES =================
 theme_menu(){
 while true; do
 clear
-echo "========== 🎨 THEMES =========="
+echo "🎨 ===== THEMES ===== 🎨"
+echo ""
 echo "1) 🌌 Nebula"
 echo "2) 🌑 Dark"
 echo "3) 🔥 Red"
 echo "0) Back"
+echo ""
+
 read -p "Select: " t
 
 case $t in
-1) ok "Nebula applied" ;;
-2) ok "Dark applied" ;;
-3) ok "Red applied" ;;
+1) ok "Nebula applied 🌌" ;;
+2) ok "Dark applied 🌑" ;;
+3) ok "Red applied 🔥" ;;
 0) break ;;
 *) warn "Invalid" ;;
 esac
+
 read -p "Press Enter..."
 done
 }
@@ -201,18 +194,22 @@ done
 tools_menu(){
 while true; do
 clear
-echo "========== ⚙ TOOLS =========="
+echo "⚙ ===== TOOLS ===== ⚙"
+echo ""
 echo "1) Show Ports"
-echo "2) Show Processes"
+echo "2) Processes"
 echo "0) Back"
+echo ""
+
 read -p "Select: " t
 
 case $t in
-1) ss -tulnp ;;
+1) ss -tuln ;;
 2) ps aux | head ;;
 0) break ;;
 *) warn "Invalid" ;;
 esac
+
 read -p "Press Enter..."
 done
 }
@@ -221,23 +218,59 @@ done
 mc_menu(){
 while true; do
 clear
-echo "========== 🛠 MC + DISCORD =========="
+echo "🛠 ===== MC + DISCORD ===== 🛠"
+echo ""
 echo "1) Install Node"
-echo "2) Create Bot Folder"
+echo "2) Create Bot"
 echo "0) Back"
+echo ""
+
 read -p "Select: " m
 
 case $m in
 1)
-sudo apt install -y nodejs npm
+info "Installing Node..."
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+sudo apt install -y nodejs
 ;;
 2)
-mkdir bot && cd bot
-echo "console.log('Bot Ready')" > bot.js
+mkdir -p bot
+echo "console.log('Bot Running 🚀')" > bot/bot.js
+ok "Bot created ✔"
 ;;
 0) break ;;
 *) warn "Invalid" ;;
 esac
+
+read -p "Press Enter..."
+done
+}
+
+# ================= PANEL =================
+panel_menu(){
+while true; do
+clear
+echo "🌐 ===== PANEL INSTALL ===== 🌐"
+echo ""
+echo "1) Pterodactyl"
+echo "2) PufferPanel"
+echo "0) Back"
+echo ""
+
+read -p "Select: " p
+
+case $p in
+1)
+info "Installer running..."
+bash <(curl -s https://pterodactyl-installer.se)
+;;
+2)
+info "Install manually: https://pufferpanel.com"
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+
 read -p "Press Enter..."
 done
 }
@@ -245,14 +278,14 @@ done
 # ================= MAIN =================
 while true; do
 header
-read -p "👉 Select option: " opt
+read -p "👉 Select: " opt
 
 case $opt in
 1) panel_menu ;;
-2) wings_menu ;;
+2) echo "Use Wings from official docs";;
 3) cloudflare_menu ;;
 4) blueprint_menu ;;
-5) tealscale_menu ;;
+5) tailscale_menu ;;
 6) theme_menu ;;
 7) tools_menu ;;
 8) mc_menu ;;
