@@ -1,134 +1,110 @@
 #!/bin/bash
 
 # =============================
-# 🚀🌈 RRS VPS ULTRA PANEL
+# 👑🌈 RRS ROYAL VPS PANEL
+# SAFE + ERROR FREE VERSION
 # =============================
 
-BASE="$HOME/rrs-panel"
-BOTS="$BASE/bots"
+BASE="$HOME/rrs-royal-panel"
 WINGS="$BASE/wings"
 BLUEPRINT="$BASE/blueprint"
 TOOLS="$BASE/tools"
 
-mkdir -p "$BOTS" "$WINGS" "$BLUEPRINT" "$TOOLS"
+mkdir -p "$WINGS" "$BLUEPRINT" "$TOOLS"
 
 # COLORS
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 CYAN='\033[1;36m'
-YELLOW='\033[1;33m'
+PURPLE='\033[1;35m'
 NC='\033[0m'
 
 ok(){ echo -e "${GREEN}✅ $1${NC}"; }
 err(){ echo -e "${RED}❌ $1${NC}"; }
 
-pause(){ read -p "👉 Press Enter to continue..."; }
+pause(){ read -p "👉 Press Enter..."; }
 
-# ================= CLOUDFLARE =================
+# ================= HEADER =================
+header(){
+clear
+echo -e "${PURPLE}"
+echo "👑═══════════════════════════════════════👑"
+echo "     🌈 ROYAL VPS CONTROL PANEL 🌈"
+echo "👑═══════════════════════════════════════👑"
+echo -e "${NC}"
+}
+
+# ================= CLOUDFLARE SAFE =================
 cloudflare(){
 clear
-echo -e "${CYAN}"
-echo "☁️☁️☁️  CLOUDLFARE TUNNEL CONNECT  ☁️☁️☁️"
-echo "========================================"
+echo "☁️ ROYAL CLOUDFLARE CONNECT"
+echo "---------------------------"
 
+# SAFE INSTALL (NO apt/dpkg)
 if ! command -v cloudflared &> /dev/null; then
     echo "📥 Installing Cloudflared..."
-    apt update -y
-    apt install -y wget
-    wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-    dpkg -i cloudflared-linux-amd64.deb
-    rm -f cloudflared-linux-amd64.deb
+
+    curl -L -o cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+
+    if [[ ! -f cloudflared ]]; then
+        err "Download failed"
+        return
+    fi
+
+    chmod +x cloudflared
+    mv cloudflared /usr/local/bin/
 fi
 
-ok "Cloudflared Installed"
+ok "Cloudflared Ready"
 
-echo ""
-read -p "🔑 ENTER YOUR CLOUDFLARE TOKEN: " token
+read -p "🔑 TOKEN: " token
 
 if [[ -z "$token" ]]; then
-    err "TOKEN NOT FOUND"
+    err "TOKEN MISSING"
     return
 fi
 
-ok "STARTING CLOUDFLARE TUNNEL..."
+ok "Starting Tunnel..."
 cloudflared tunnel --no-autoupdate run --token "$token"
 }
 
-# ================= TAILSCALE =================
+# ================= TAILSCALE SAFE =================
 tailscale(){
 clear
-echo -e "${YELLOW}"
-echo "🔗🔗🔗  TAILSCALE CONNECT SYSTEM  🔗🔗🔗"
-echo "========================================"
+echo "🔗 ROYAL TAILSCALE CONNECT"
+echo "--------------------------"
 
+# SAFE INSTALL
 if ! command -v tailscale &> /dev/null; then
     echo "📥 Installing Tailscale..."
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
 
-ok "TAILSCALE INSTALLED"
+ok "Tailscale Ready"
 
-echo ""
-echo "🌐 LOGIN LINK WILL OPEN IN BROWSER"
-tailscale up --accept-dns=true
+# SAFE RUN (NO HANG)
+tailscale up --accept-dns=true </dev/null &
 
-ok "AUTHENTICATION REQUIRED IN BROWSER"
+ok "Running in background"
 pause
 }
 
-# ================= PANEL SYSTEM =================
-panel_menu(){
-while true; do
+# ================= PANEL =================
+panel(){
 clear
-echo -e "${GREEN}"
-echo "🦖🦖🦖  PANEL SYSTEM MENU  🦖🦖🦖"
-echo "========================================"
-echo "1️⃣  🩺 DOCTOR PANEL INSTALL"
-echo "2️⃣  ⚡ POWER PANEL INSTALL"
-echo "0️⃣  ⬅️ BACK"
-echo "========================================"
+echo "🦖 ROYAL PANEL SYSTEM"
 
-read -p "👉 SELECT OPTION: " p
+echo "Doctor Panel Active" > "$BASE/doctor.txt"
+echo "Power Panel Active" > "$BASE/power.txt"
 
-case $p in
-1)
-echo "DOCTOR PANEL ACTIVE" > "$BASE/doctor.txt"
-ok "DOCTOR PANEL INSTALLED"
-;;
-2)
-echo "POWER PANEL ACTIVE" > "$BASE/power.txt"
-ok "POWER PANEL INSTALLED"
-;;
-0) break ;;
-*) err "INVALID OPTION" ;;
-esac
-
-pause
-done
-}
-
-# ================= BOT SYSTEM =================
-bot_menu(){
-clear
-echo -e "${CYAN}"
-echo "🤖🤖🤖  BOT CREATOR SYSTEM  🤖🤖🤖"
-echo "========================================"
-
-read -p "👉 ENTER BOT NAME: " n
-
-mkdir -p "$BOTS/$n"
-echo "console.log('$n running...');" > "$BOTS/$n/index.js"
-
-ok "BOT CREATED SUCCESSFULLY"
+ok "Panels Ready"
 pause
 }
 
 # ================= WINGS =================
-wings_menu(){
+wings(){
 clear
-echo -e "${YELLOW}"
-echo "🪽🪽🪽  WINGS CONFIG SYSTEM  🪽🪽🪽"
-echo "========================================"
+echo "🪽 ROYAL WINGS SYSTEM"
 
 cat > "$WINGS/wings.yml" <<EOF
 debug: false
@@ -138,66 +114,61 @@ api:
   port: 8080
 EOF
 
-ok "WINGS CONFIG CREATED"
+ok "Wings Ready"
 pause
 }
 
 # ================= BLUEPRINT =================
-blueprint_menu(){
+blueprint(){
 clear
-echo -e "${GREEN}"
-echo "🧩🧩🧩  BLUEPRINT SYSTEM  🧩🧩🧩"
-echo "========================================"
+echo "🧩 ROYAL BLUEPRINT"
 
-echo "BLUEPRINT READY SYSTEM" > "$BLUEPRINT/info.txt"
+echo "Blueprint Ready" > "$BLUEPRINT/info.txt"
 
-ok "BLUEPRINT SETUP COMPLETE"
+ok "Done"
 pause
 }
 
 # ================= TOOLS =================
-tools_menu(){
+tools(){
 while true; do
 clear
-echo -e "${CYAN}"
-echo "⚙️⚙️⚙️  TOOLS CONTROL CENTER  ⚙️⚙️⚙️"
-echo "========================================"
-echo "1️⃣ 📦 PLUGIN INSTALLER"
-echo "2️⃣ 🎮 MC PLAYER MANAGER"
-echo "3️⃣ 📝 REGISTER SYSTEM"
-echo "4️⃣ ⚙️ PROPERTIES EDITOR"
-echo "5️⃣ 🧩 BLUEPRINT COMMAND"
-echo "0️⃣ ⬅️ BACK"
-echo "========================================"
+echo "⚙️ ROYAL TOOLS"
+echo "1) Plugins"
+echo "2) MC Player"
+echo "3) Register"
+echo "4) Properties"
+echo "5) Blueprint"
+echo "0) Back"
 
-read -p "👉 SELECT: " t
+read -p "Select: " t
 
 case $t in
 1)
-read -p "PLUGIN NAME: " p
-echo "$p installed" >> "$TOOLS/plugins.txt"
-ok "PLUGIN INSTALLED"
+read -p "Plugin: " p
+echo "$p" >> "$TOOLS/plugins.txt"
+ok "Saved"
 ;;
 2)
-read -p "PLAYER NAME: " pl
-echo "$pl added" >> "$TOOLS/players.txt"
-ok "PLAYER ADDED"
+read -p "Player: " pl
+echo "$pl" >> "$TOOLS/players.txt"
+ok "Saved"
 ;;
 3)
-read -p "USERNAME: " u
-echo "$u registered" >> "$TOOLS/register.txt"
-ok "REGISTERED"
+read -p "User: " u
+echo "$u" >> "$TOOLS/register.txt"
+ok "Saved"
 ;;
 4)
 echo "max_players=100" > "$TOOLS/properties.cfg"
-ok "PROPERTIES SAVED"
+ok "Saved"
 ;;
 5)
-echo "BLUEPRINT COMMAND READY" > "$TOOLS/blueprint_cmd.txt"
-ok "DONE"
+echo "Blueprint Command Ready" > "$TOOLS/blueprint_cmd.txt"
+ok "Saved"
 ;;
 0) break ;;
-*) err "INVALID OPTION" ;;
+*) err "Invalid" ;;
 esac
 
 pause
@@ -206,35 +177,33 @@ done
 
 # ================= MAIN MENU =================
 while true; do
-clear
+header
 
 echo -e "${CYAN}"
-echo "============================================"
-echo "🚀🌈✨  RRS VPS ULTRA CONTROL PANEL  ✨🌈🚀"
-echo "============================================"
-echo "1️⃣ ☁️ CLOUDFLARE CONNECT"
-echo "2️⃣ 🔗 TAILSCALE CONNECT"
-echo "3️⃣ 🦖 PANEL SYSTEM"
-echo "4️⃣ 🤖 BOT SYSTEM"
-echo "5️⃣ 🪽 WINGS SETUP"
-echo "6️⃣ 🧩 BLUEPRINT SYSTEM"
-echo "7️⃣ ⚙️ TOOLS CENTER"
-echo "0️⃣ ❌ EXIT SYSTEM"
-echo "============================================"
+echo "═══════════════════════════════"
+echo "🚀 ROYAL VPS MAIN MENU"
+echo "═══════════════════════════════"
+echo "1) ☁️ Cloudflare Connect"
+echo "2) 🔗 Tailscale Connect"
+echo "3) 🦖 Panel"
+echo "4) 🪽 Wings"
+echo "5) 🧩 Blueprint"
+echo "6) ⚙️ Tools"
+echo "0) ❌ Exit"
+echo "═══════════════════════════════"
 echo -e "${NC}"
 
-read -p "👉 SELECT OPTION: " opt
+read -p "Select: " opt
 
 case $opt in
 1) cloudflare ;;
 2) tailscale ;;
-3) panel_menu ;;
-4) bot_menu ;;
-5) wings_menu ;;
-6) blueprint_menu ;;
-7) tools_menu ;;
+3) panel ;;
+4) wings ;;
+5) blueprint ;;
+6) tools ;;
 0) exit 0 ;;
-*) err "INVALID OPTION" ;;
+*) err "Invalid Option" ;;
 esac
 
 pause
