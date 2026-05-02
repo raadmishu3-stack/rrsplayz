@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================
-# 🚀 RRS USER VPS PANEL (NO ROOT AUTO)
+# 🚀 RRS ULTIMATE USER PANEL
 # =============================
 
 # COLORS
@@ -15,14 +15,16 @@ NC='\033[0m'
 
 BASE="$HOME/rrs-panel"
 BOTS="$BASE/bots"
-mkdir -p "$BOTS"
+WINGS="$BASE/wings"
+
+mkdir -p "$BOTS" "$WINGS"
 
 # ================= HEADER =================
 header() {
 clear
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════╗"
-echo "║        🚀 RRS USER CONTROL PANEL            ║"
+echo "║        🚀 RRS ULTIMATE VPS PANEL            ║"
 echo "╠══════════════════════════════════════════════╣"
 echo "║ 1️⃣  🖥 SYSTEM INFO                          ║"
 echo "║ 2️⃣  🤖 BOT MANAGER                         ║"
@@ -32,6 +34,7 @@ echo "║ 5️⃣  🎨 THEME SELECTOR                      ║"
 echo "║ 6️⃣  🧩 BLUEPRINT SETUP                     ║"
 echo "║ 7️⃣  ⚙️ USER TOOLS                          ║"
 echo "║ 8️⃣  🎮 MC / DISCORD INFO                   ║"
+echo "║ 9️⃣  🦖 PANEL & WINGS                       ║"
 echo "║ 0️⃣  EXIT                                   ║"
 echo "╚══════════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -47,8 +50,8 @@ pause(){ read -p "🔁 Press Enter..."; }
 # ================= SYSTEM INFO =================
 system_info(){
 clear
-echo "🖥 SYSTEM INFORMATION"
-echo "----------------------------"
+echo "🖥 SYSTEM INFO"
+echo "----------------------"
 uname -a
 echo ""
 free -h
@@ -58,7 +61,7 @@ echo ""
 whoami
 }
 
-# ================= BOT MANAGER =================
+# ================= BOT =================
 bot_menu(){
 while true; do
 clear
@@ -74,7 +77,7 @@ case $c in
 read -p "Bot name: " n
 mkdir -p "$BOTS/$n"
 echo "console.log('Bot $n running');" > "$BOTS/$n/bot.js"
-ok "Bot created (run manually with node)"
+ok "Bot created"
 ;;
 2)
 read -p "Bot name: " n
@@ -85,7 +88,7 @@ ok "Deleted"
 ls "$BOTS"
 ;;
 0) break ;;
-*) err "Invalid option" ;;
+*) err "Invalid" ;;
 esac
 pause
 done
@@ -94,14 +97,9 @@ done
 # ================= CLOUDFLARE =================
 cloudflare_connect(){
 clear
-echo "☁️ CLOUDFLARE ZERO TRUST CONNECT"
-echo "--------------------------------------"
-echo "👉 Step:"
-echo "1. Go to Cloudflare Dashboard"
-echo "2. Zero Trust → Networks → Tunnel"
-echo "3. Create Tunnel"
-echo "4. Copy TOKEN"
-echo ""
+echo "☁️ CLOUDFLARE CONNECT"
+echo "--------------------------"
+echo "👉 Copy TOKEN from Zero Trust Tunnel"
 
 read -p "📋 Paste TOKEN: " TOKEN
 
@@ -111,13 +109,10 @@ return
 fi
 
 if ! command -v cloudflared &> /dev/null; then
-warn "cloudflared not installed ❌"
-echo "👉 Install manually:"
-echo "https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/"
+warn "cloudflared not installed"
 return
 fi
 
-echo ""
 ok "Connecting..."
 cloudflared tunnel run --token "$TOKEN"
 }
@@ -126,15 +121,12 @@ cloudflared tunnel run --token "$TOKEN"
 tailscale_connect(){
 clear
 echo "🔗 TAILSCALE CONNECT"
-echo "----------------------------"
 
 if ! command -v tailscale &> /dev/null; then
-warn "tailscale not installed ❌"
-echo "👉 Install manually: https://tailscale.com/download"
+warn "tailscale not installed"
 return
 fi
 
-echo "👉 Login link will appear below:"
 tailscale up
 }
 
@@ -142,7 +134,7 @@ tailscale up
 theme_menu(){
 while true; do
 clear
-echo "🎨 THEME SELECTOR"
+echo "🎨 THEMES"
 echo "1) Nebula 🌌"
 echo "2) Dark 🌑"
 echo "3) Neon 💜"
@@ -150,9 +142,9 @@ echo "0) Back"
 read -p "👉 Select: " t
 
 case $t in
-1) ok "Nebula Theme Applied 🌌" ;;
-2) ok "Dark Theme Applied 🌑" ;;
-3) ok "Neon Theme Applied 💜" ;;
+1) ok "Nebula Applied" ;;
+2) ok "Dark Applied" ;;
+3) ok "Neon Applied" ;;
 0) break ;;
 *) err "Invalid" ;;
 esac
@@ -162,12 +154,8 @@ done
 
 # ================= BLUEPRINT =================
 blueprint_setup(){
-clear
-echo "🧩 BLUEPRINT SETUP (USER MODE)"
-echo "--------------------------------"
 mkdir -p "$BASE/blueprint"
-cd "$BASE/blueprint"
-ok "Blueprint folder ready at ~/rrs-panel/blueprint"
+ok "Blueprint folder ready"
 }
 
 # ================= USER TOOLS =================
@@ -176,7 +164,7 @@ while true; do
 clear
 echo "⚙️ USER TOOLS"
 echo "1) Check Ports"
-echo "2) Running Processes"
+echo "2) Processes"
 echo "3) Disk Usage"
 echo "0) Back"
 read -p "👉 Select: " c
@@ -192,19 +180,19 @@ pause
 done
 }
 
-# ================= MC / DISCORD =================
+# ================= MC =================
 mc_tools(){
 while true; do
 clear
-echo "🎮 MC / DISCORD INFO"
+echo "🎮 MC / DISCORD"
 echo "1) Minecraft Bot Info"
 echo "2) Discord Bot Info"
 echo "0) Back"
 read -p "👉 Select: " c
 
 case $c in
-1) info "Use mineflayer (Node.js)" ;;
-2) info "Use discord.js + bot token" ;;
+1) info "Use mineflayer" ;;
+2) info "Use discord.js" ;;
 0) break ;;
 *) err "Invalid" ;;
 esac
@@ -212,7 +200,44 @@ pause
 done
 }
 
-# ================= MAIN LOOP =================
+# ================= PANEL + WINGS =================
+panel_menu(){
+while true; do
+clear
+echo "🦖 PANEL & WINGS"
+echo "----------------------------------"
+echo "1) Panel Guide"
+echo "2) Wings Token Save"
+echo "3) Show Saved Token"
+echo "4) Create Wings Folder"
+echo "0) Back"
+read -p "👉 Select: " p
+
+case $p in
+1)
+echo "👉 Pterodactyl Panel:"
+echo "https://pterodactyl.io"
+;;
+2)
+read -p "📋 Paste Wings Token: " WINGS_TOKEN
+echo "$WINGS_TOKEN" > "$WINGS/token.txt"
+ok "Saved"
+;;
+3)
+cat "$WINGS/token.txt" 2>/dev/null || echo "No token"
+;;
+4)
+mkdir -p "$WINGS"
+ok "Folder ready"
+;;
+0) break ;;
+*) err "Invalid" ;;
+esac
+pause
+done
+}
+
+# ================= MAIN =================
 while true; do
 header
 read -p "👉 Select Option: " opt
@@ -226,6 +251,7 @@ case $opt in
 6) blueprint_setup ;;
 7) user_tools ;;
 8) mc_tools ;;
+9) panel_menu ;;
 0) echo "👋 Exit"; exit ;;
 *) err "Invalid option" ;;
 esac
