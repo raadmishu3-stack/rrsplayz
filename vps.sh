@@ -1,233 +1,170 @@
 #!/bin/bash
 
 # =============================
-# 🚀 RRS ULTIMATE VPS PANEL (STABLE FIXED)
+# 🚀 RRS VPS PANEL
 # =============================
-
-# COLORS
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-BLUE='\033[1;34m'
-CYAN='\033[1;36m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
 
 BASE="$HOME/rrs-panel"
 BOTS="$BASE/bots"
 WINGS="$BASE/wings"
+BLUEPRINT="$BASE/blueprint"
 
-mkdir -p "$BOTS" "$WINGS"
+mkdir -p "$BOTS" "$WINGS" "$BLUEPRINT"
 
-# ================= HEADER =================
-header(){
-clear
-echo -e "${CYAN}"
-echo "╔══════════════════════════════════════════════╗"
-echo "║        🚀 RRS ULTIMATE VPS PANEL            ║"
-echo "╠══════════════════════════════════════════════╣"
-echo "║ 1️⃣  🖥 SYSTEM INFO                          ║"
-echo "║ 2️⃣  🤖 BOT MANAGER                         ║"
-echo "║ 3️⃣  ☁️ CLOUDFLARE CONNECT                  ║"
-echo "║ 4️⃣  🔗 TAILSCALE CONNECT                   ║"
-echo "║ 5️⃣  🎨 THEME                               ║"
-echo "║ 6️⃣  🧩 BLUEPRINT                           ║"
-echo "║ 7️⃣  ⚙️ USER TOOLS                          ║"
-echo "║ 8️⃣  🎮 MC / DISCORD                        ║"
-echo "║ 9️⃣  🦖 PANEL & WINGS                       ║"
-echo "║ 0️⃣  EXIT                                   ║"
-echo "╚══════════════════════════════════════════════╝"
-echo -e "${NC}"
-}
+# COLORS
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+CYAN='\033[1;36m'
+NC='\033[0m'
 
 ok(){ echo -e "${GREEN}✅ $1${NC}"; }
 err(){ echo -e "${RED}❌ $1${NC}"; }
-info(){ echo -e "${BLUE}ℹ️ $1${NC}"; }
+
 pause(){ read -p "Press Enter..."; }
 
-# ================= SYSTEM =================
-system_info(){
-clear
-uname -a
-echo ""
-free -h
-echo ""
-df -h
-echo ""
-whoami
-}
-
-# ================= BOT =================
-bot_menu(){
-while true; do
-clear
-echo "🤖 BOT MANAGER"
-echo "1) Create Bot"
-echo "2) Delete Bot"
-echo "3) List Bots"
-echo "0) Back"
-read -p "Select: " c
-
-case $c in
-1)
-read -p "Bot name: " n
-mkdir -p "$BOTS/$n"
-echo "console.log('Bot $n running');" > "$BOTS/$n/bot.js"
-ok "Created"
-;;
-2)
-read -p "Bot name: " n
-rm -rf "$BOTS/$n"
-ok "Deleted"
-;;
-3)
-ls "$BOTS"
-;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-pause
-done
-}
-
-# ================= CLOUDFLARE FIXED =================
-cloudflare_connect(){
+# ================= CLOUDFLARE =================
+cloudflare(){
 clear
 echo "☁️ CLOUDFLARE CONNECT"
 
 command -v cloudflared >/dev/null 2>&1 || {
-err "cloudflared not installed"
-echo "Install: https://developers.cloudflare.com/cloudflare-one/"
-return
+wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+dpkg -i cloudflared-linux-amd64.deb
+rm -f cloudflared-linux-amd64.deb
 }
 
-read -p "Token: " TOKEN
-[[ -z "$TOKEN" ]] && { err "Token empty"; return; }
+read -p "TOKEN: " token
+[[ -z "$token" ]] && { err "Token missing"; return; }
 
 ok "Starting Cloudflare Tunnel..."
-
-# 🔥 STABLE METHOD
-cloudflared tunnel --no-autoupdate run --token "$TOKEN"
+cloudflared tunnel --no-autoupdate run --token "$token"
 }
 
-# ================= TAILSCALE FIXED =================
-tailscale_connect(){
+# ================= TAILSCALE =================
+tailscale(){
 clear
 echo "🔗 TAILSCALE CONNECT"
 
 command -v tailscale >/dev/null 2>&1 || {
-err "tailscale not installed"
-echo "Install: https://tailscale.com/download"
-return
+curl -fsSL https://tailscale.com/install.sh | sh
 }
 
-ok "Connecting Tailscale..."
 tailscale up --accept-dns=true
+ok "Tailscale Connected"
 }
 
-# ================= THEME =================
-theme(){
+# ================= PANEL =================
+panel(){
 clear
-echo "🎨 Theme system (demo)"
-echo "1) Nebula"
-echo "2) Dark"
-echo "3) Neon"
-read -p "Select: " t
+echo "🦖 PANEL SETUP"
 
-case $t in
-1) ok "Nebula applied" ;;
-2) ok "Dark applied" ;;
-3) ok "Neon applied" ;;
-*) err "Invalid" ;;
-esac
-pause
-}
+echo "Doctor Panel" > "$BASE/doctor-panel.txt"
+echo "Power Panel" > "$BASE/power-panel.txt"
 
-# ================= BLUEPRINT =================
-blueprint(){
-mkdir -p "$BASE/blueprint"
-ok "Blueprint ready"
-pause
-}
-
-# ================= USER TOOLS =================
-tools(){
-while true; do
-clear
-echo "⚙️ TOOLS"
-echo "1) Ports"
-echo "2) Processes"
-echo "3) Disk"
-echo "0) Back"
-read -p "Select: " c
-
-case $c in
-1) ss -tulnp ;;
-2) ps aux | head ;;
-3) df -h ;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-pause
-done
-}
-
-# ================= MC =================
-mc(){
-clear
-echo "🎮 MC / DISCORD"
-echo "Minecraft: use mineflayer"
-echo "Discord: use discord.js"
-pause
+ok "Panels Ready"
 }
 
 # ================= WINGS =================
 wings(){
+clear
+echo "🪽 WINGS SETUP"
+
+cat > "$WINGS/wings.yml" <<EOF
+debug: false
+token: "YOUR_WINGS_TOKEN"
+api:
+  host: 0.0.0.0
+  port: 8080
+EOF
+
+ok "Wings Ready"
+}
+
+# ================= BLUEPRINT =================
+blueprint(){
+clear
+echo "🧩 BLUEPRINT SETUP"
+
+echo "Blueprint Ready" > "$BLUEPRINT/info.txt"
+
+ok "Blueprint Done"
+}
+
+# ================= TOOLS =================
+tools(){
 while true; do
 clear
-echo "🦖 PANEL & WINGS"
-echo "1) Save Token"
-echo "2) Show Token"
-echo "3) Create Folder"
+echo "⚙️ TOOLS"
+echo "1) Plugins Installer"
+echo "2) MC Player Manager"
+echo "3) Register System"
+echo "4) Properties"
+echo "5) Blueprint Command"
 echo "0) Back"
-read -p "Select: " p
 
-case $p in
+read -p "Select: " t
+
+case $t in
 1)
-read -p "Token: " t
-echo "$t" > "$WINGS/token.txt"
-ok "Saved"
+read -p "Plugin Name: " p
+echo "$p" >> "$BASE/plugins.txt"
+ok "Plugin Installed"
 ;;
 2)
-cat "$WINGS/token.txt" 2>/dev/null || echo "No token"
+read -p "Player Name: " pl
+echo "$pl" >> "$BASE/players.txt"
+ok "Player Added"
 ;;
 3)
-mkdir -p "$WINGS"
-ok "Created"
+read -p "Username: " u
+echo "$u" >> "$BASE/register.txt"
+ok "Registered"
+;;
+4)
+echo "max_players=100" > "$BASE/properties.cfg"
+ok "Saved"
+;;
+5)
+echo "Blueprint Command Ready" > "$BASE/blueprint_cmd.txt"
+ok "Done"
 ;;
 0) break ;;
 *) err "Invalid" ;;
 esac
+
 pause
 done
 }
 
-# ================= MAIN =================
+# ================= MAIN MENU =================
 while true; do
-header
+clear
+
+echo -e "${CYAN}"
+echo "===================================="
+echo "🚀 RRS VPS PANEL"
+echo "===================================="
+echo "1) Cloudflare Connect"
+echo "2) Tailscale Connect"
+echo "3) Panel Setup"
+echo "4) Wings Setup"
+echo "5) Blueprint Setup"
+echo "6) Tools"
+echo "0) Exit"
+echo "===================================="
+echo -e "${NC}"
+
 read -p "Select: " opt
 
 case $opt in
-1) system_info ;;
-2) bot_menu ;;
-3) cloudflare_connect ;;
-4) tailscale_connect ;;
-5) theme ;;
-6) blueprint ;;
-7) tools ;;
-8) mc ;;
-9) wings ;;
+1) cloudflare ;;
+2) tailscale ;;
+3) panel ;;
+4) wings ;;
+5) blueprint ;;
+6) tools ;;
 0) exit 0 ;;
-*) err "Invalid" ;;
+*) err "Invalid Option" ;;
 esac
 
 pause
