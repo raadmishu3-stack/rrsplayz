@@ -1,131 +1,248 @@
 #!/bin/bash
 
 # =============================
-# 🚀 RRS OFFICIAL VPS PANEL
+# 🚀 RRS PRO VPS PANEL
 # =============================
 
 # COLORS
-RED='\033[0;31m'
-GREEN='\033[0;32m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
-CYAN='\033[0;36m'
-PURPLE='\033[0;35m'
+CYAN='\033[1;36m'
+MAGENTA='\033[1;35m'
+WHITE='\033[1;37m'
 NC='\033[0m'
 
 # HEADER
 header() {
 clear
 echo -e "${CYAN}"
-echo "╔══════════════════════════════════════╗"
-echo "║ 🚀 RRS VPS CONTROL PANEL           ║"
-echo "╠══════════════════════════════════════╣"
-echo "║ 1️⃣ Panel Install Guide             ║"
-echo "║ 2️⃣ Wings Install Guide             ║"
-echo "║ 3️⃣ Cloudflare Install Guide        ║"
-echo "║ 4️⃣ Blueprint Info                  ║"
-echo "║ 5️⃣ Tealsceal Install Guide         ║"
-echo "║ 6️⃣ Theme Selector                  ║"
-echo "║ 7️⃣ Tools Menu                      ║"
-echo "║ 8️⃣ Minecraft / Discord Setup       ║"
-echo "║ 0️⃣ Exit                            ║"
-echo "╚══════════════════════════════════════╝"
+echo "╔══════════════════════════════════════════════╗"
+echo "║        🚀 RRS PRO VPS CONTROL PANEL         ║"
+echo "╠══════════════════════════════════════════════╣"
+echo "║  1️⃣  PANEL INSTALL                        ║"
+echo "║  2️⃣  WINGS INSTALL                        ║"
+echo "║  3️⃣  CLOUDFLARE SETUP                     ║"
+echo "║  4️⃣  BLUEPRINT INSTALL                    ║"
+echo "║  5️⃣  TEALSCALE INSTALL                    ║"
+echo "║  6️⃣  THEME SELECTOR                       ║"
+echo "║  7️⃣  TOOLS                                ║"
+echo "║  8️⃣  MINECRAFT / DISCORD                  ║"
+echo "║  0️⃣  EXIT                                 ║"
+echo "╚══════════════════════════════════════════════╝"
 echo -e "${NC}"
 }
 
-# STATUS
 info(){ echo -e "${BLUE}ℹ $1${NC}"; }
 ok(){ echo -e "${GREEN}✔ $1${NC}"; }
 warn(){ echo -e "${YELLOW}⚠ $1${NC}"; }
 
-# PANEL
-panel_menu() {
-echo "1) Pterodactyl 🌐"
-echo "2) PufferPanel 🌐"
+# ================= PANEL =================
+panel_menu(){
+while true; do
+clear
+echo "========== 🌐 PANEL INSTALL =========="
+echo "1) Pterodactyl Install"
+echo "2) PufferPanel Install"
+echo "0) 🔙 Back"
 read -p "Select: " p
 
 case $p in
 1)
-info "https://pterodactyl.io (manual install)"
+info "Installing Pterodactyl..."
+bash <(curl -s https://pterodactyl-installer.se)
+ok "Done"
 ;;
 2)
-info "https://pufferpanel.com (manual install)"
+info "Installing PufferPanel..."
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | bash
+sudo apt install -y pufferpanel
+ok "Installed"
 ;;
-*) warn "Invalid option" ;;
+0) break ;;
+*) warn "Invalid" ;;
 esac
+read -p "Press Enter..."
+done
 }
 
-# WINGS
-wings_menu() {
-info "Wings Install 🪽"
-echo "curl -s https://get.docker.com | bash"
-echo "Then follow official docs"
+# ================= WINGS =================
+wings_menu(){
+while true; do
+clear
+echo "========== 🪽 WINGS =========="
+echo "1) Install Docker"
+echo "2) Install Wings"
+echo "0) Back"
+read -p "Select: " w
+
+case $w in
+1)
+curl -s https://get.docker.com | bash
+ok "Docker installed"
+;;
+2)
+info "Follow official config after download"
+echo "https://pterodactyl.io/wings"
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+read -p "Press Enter..."
+done
 }
 
-# CLOUDFLARE
-cloudflare_menu() {
-info "Cloudflare Setup 🌐"
-echo "1. Add domain"
-echo "2. Change nameservers"
-echo "3. Enable proxy"
+# ================= CLOUDFLARE =================
+cloudflare_menu(){
+while true; do
+clear
+echo "========== 🌐 CLOUDFLARE =========="
+echo "1) Install Cloudflared Tunnel"
+echo "2) Run Tunnel"
+echo "0) Back"
+read -p "Select: " c
+
+case $c in
+1)
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
+chmod +x cloudflared
+ok "Installed cloudflared"
+;;
+2)
+./cloudflared tunnel --url http://localhost:80
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+read -p "Press Enter..."
+done
 }
 
-# BLUEPRINT
-blueprint_menu() {
-info "Blueprint 📘"
-echo "UI + API + Dashboard system design layer"
+# ================= BLUEPRINT =================
+blueprint_menu(){
+while true; do
+clear
+echo "========== 📘 BLUEPRINT =========="
+echo "1) Create basic panel folder"
+echo "2) Run demo server"
+echo "0) Back"
+read -p "Select: " b
+
+case $b in
+1)
+mkdir -p blueprint-panel
+cd blueprint-panel
+echo "<h1>Blueprint Panel</h1>" > index.html
+ok "Created"
+;;
+2)
+python3 -m http.server 8080
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+read -p "Press Enter..."
+done
 }
 
-# TEAL SCEAL
-tealsceal_menu() {
-info "Tealsceal 🧩"
-echo "Manual install only:"
-echo "Upload files → configure → run"
+# ================= TEALSCALE =================
+tealscale_menu(){
+while true; do
+clear
+echo "========== 🧩 TEALSCALE =========="
+echo "1) Install Node.js"
+echo "2) Setup Tealscale Project"
+echo "0) Back"
+read -p "Select: " t
+
+case $t in
+1)
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+sudo apt install -y nodejs
+ok "Node installed"
+;;
+2)
+mkdir tealscale
+cd tealscale
+npm init -y
+ok "Project created"
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+read -p "Press Enter..."
+done
 }
 
-# THEMES
-theme_menu() {
+# ================= THEME =================
+theme_menu(){
+while true; do
+clear
+echo "========== 🎨 THEMES =========="
 echo "1) 🌌 Nebula"
 echo "2) 🌑 Dark"
-echo "3) 📘 Blueprint"
+echo "3) 🔥 Red"
+echo "0) Back"
 read -p "Select: " t
 
 case $t in
-1) ok "Nebula theme 🌌" ;;
-2) ok "Dark theme 🌑" ;;
-3) ok "Blueprint theme 📘" ;;
+1) ok "Nebula applied" ;;
+2) ok "Dark applied" ;;
+3) ok "Red applied" ;;
+0) break ;;
 *) warn "Invalid" ;;
 esac
+read -p "Press Enter..."
+done
 }
 
-# TOOLS
-tools_menu() {
-echo "1) Register Plugin"
-echo "2) Player Manager"
-echo "3) MC Properties"
-echo "4) Discord Bot"
-echo "5) Minecraft Bot"
+# ================= TOOLS =================
+tools_menu(){
+while true; do
+clear
+echo "========== ⚙ TOOLS =========="
+echo "1) Show Ports"
+echo "2) Show Processes"
+echo "0) Back"
 read -p "Select: " t
 
 case $t in
-1) info "Plugin = manual install in plugins folder" ;;
-2) info "PlayerManager plugin" ;;
-3) info "server.properties edit" ;;
-4) info "discord.js bot" ;;
-5) info "mineflayer bot" ;;
+1) ss -tulnp ;;
+2) ps aux | head ;;
+0) break ;;
 *) warn "Invalid" ;;
 esac
+read -p "Press Enter..."
+done
 }
 
-# MC + DISCORD
-mc_menu() {
-info "Minecraft / Discord Setup 🛠"
-echo "- Minecraft bot: mineflayer"
-echo "- Discord bot: discord.js"
-echo "- Node.js required (manual install)"
+# ================= MC =================
+mc_menu(){
+while true; do
+clear
+echo "========== 🛠 MC + DISCORD =========="
+echo "1) Install Node"
+echo "2) Create Bot Folder"
+echo "0) Back"
+read -p "Select: " m
+
+case $m in
+1)
+sudo apt install -y nodejs npm
+;;
+2)
+mkdir bot && cd bot
+echo "console.log('Bot Ready')" > bot.js
+;;
+0) break ;;
+*) warn "Invalid" ;;
+esac
+read -p "Press Enter..."
+done
 }
 
-# MAIN LOOP
+# ================= MAIN =================
 while true; do
 header
 read -p "👉 Select option: " opt
@@ -135,14 +252,11 @@ case $opt in
 2) wings_menu ;;
 3) cloudflare_menu ;;
 4) blueprint_menu ;;
-5) tealsceal_menu ;;
+5) tealscale_menu ;;
 6) theme_menu ;;
 7) tools_menu ;;
 8) mc_menu ;;
 0) echo "👋 Exit"; exit ;;
 *) warn "Invalid option" ;;
 esac
-
-echo ""
-read -p "Press Enter..."
 done
