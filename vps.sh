@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================
-# 🚀 RRS ULTIMATE USER PANEL
+# 🚀 RRS ULTIMATE VPS PANEL (FIXED)
 # =============================
 
 # COLORS
@@ -10,7 +10,6 @@ GREEN='\033[1;32m'
 BLUE='\033[1;34m'
 CYAN='\033[1;36m'
 YELLOW='\033[1;33m'
-MAGENTA='\033[1;35m'
 NC='\033[0m'
 
 BASE="$HOME/rrs-panel"
@@ -41,8 +40,8 @@ echo -e "${NC}"
 }
 
 ok(){ echo -e "${GREEN}✅ $1${NC}"; }
-info(){ echo -e "${BLUE}ℹ️  $1${NC}"; }
-warn(){ echo -e "${YELLOW}⚠️  $1${NC}"; }
+info(){ echo -e "${BLUE}ℹ️ $1${NC}"; }
+warn(){ echo -e "${YELLOW}⚠️ $1${NC}"; }
 err(){ echo -e "${RED}❌ $1${NC}"; }
 
 pause(){ read -p "🔁 Press Enter..."; }
@@ -94,40 +93,44 @@ pause
 done
 }
 
-# ================= CLOUDFLARE =================
+# ================= CLOUDFLARE FIXED =================
 cloudflare_connect(){
 clear
 echo "☁️ CLOUDFLARE CONNECT"
 echo "--------------------------"
-echo "👉 Copy TOKEN from Zero Trust Tunnel"
 
-read -p "📋 Paste TOKEN: " TOKEN
+command -v cloudflared >/dev/null 2>&1 || {
+err "cloudflared NOT installed"
+echo "Install: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/"
+return
+}
+
+read -p "📋 Paste Tunnel Token: " TOKEN
 
 if [[ -z "$TOKEN" ]]; then
 err "Token empty"
 return
 fi
 
-if ! command -v cloudflared &> /dev/null; then
-warn "cloudflared not installed"
-return
-fi
+ok "Starting Cloudflared Tunnel..."
 
-ok "Connecting..."
+# FIX: proper run mode
 cloudflared tunnel run --token "$TOKEN"
 }
 
-# ================= TAILSCALE =================
+# ================= TAILSCALE FIXED =================
 tailscale_connect(){
 clear
 echo "🔗 TAILSCALE CONNECT"
 
-if ! command -v tailscale &> /dev/null; then
-warn "tailscale not installed"
+command -v tailscale >/dev/null 2>&1 || {
+err "tailscale NOT installed"
+echo "Install: https://tailscale.com/download"
 return
-fi
+}
 
-tailscale up
+ok "Starting Tailscale..."
+tailscale up --accept-dns=true
 }
 
 # ================= THEME =================
@@ -155,7 +158,7 @@ done
 # ================= BLUEPRINT =================
 blueprint_setup(){
 mkdir -p "$BASE/blueprint"
-ok "Blueprint folder ready"
+ok "Blueprint ready"
 }
 
 # ================= USER TOOLS =================
@@ -163,14 +166,14 @@ user_tools(){
 while true; do
 clear
 echo "⚙️ USER TOOLS"
-echo "1) Check Ports"
+echo "1) Ports"
 echo "2) Processes"
-echo "3) Disk Usage"
+echo "3) Disk"
 echo "0) Back"
 read -p "👉 Select: " c
 
 case $c in
-1) ss -tuln ;;
+1) ss -tulnp ;;
 2) ps aux | head ;;
 3) df -h ;;
 0) break ;;
@@ -191,7 +194,7 @@ echo "0) Back"
 read -p "👉 Select: " c
 
 case $c in
-1) info "Use mineflayer" ;;
+1) info "Use mineflayer.js" ;;
 2) info "Use discord.js" ;;
 0) break ;;
 *) err "Invalid" ;;
@@ -200,27 +203,25 @@ pause
 done
 }
 
-# ================= PANEL + WINGS =================
+# ================= WINGS =================
 panel_menu(){
 while true; do
 clear
 echo "🦖 PANEL & WINGS"
-echo "----------------------------------"
 echo "1) Panel Guide"
-echo "2) Wings Token Save"
-echo "3) Show Saved Token"
+echo "2) Save Wings Token"
+echo "3) Show Token"
 echo "4) Create Wings Folder"
 echo "0) Back"
 read -p "👉 Select: " p
 
 case $p in
 1)
-echo "👉 Pterodactyl Panel:"
 echo "https://pterodactyl.io"
 ;;
 2)
-read -p "📋 Paste Wings Token: " WINGS_TOKEN
-echo "$WINGS_TOKEN" > "$WINGS/token.txt"
+read -p "Wings Token: " t
+echo "$t" > "$WINGS/token.txt"
 ok "Saved"
 ;;
 3)
@@ -228,7 +229,7 @@ cat "$WINGS/token.txt" 2>/dev/null || echo "No token"
 ;;
 4)
 mkdir -p "$WINGS"
-ok "Folder ready"
+ok "Created"
 ;;
 0) break ;;
 *) err "Invalid" ;;
@@ -252,7 +253,7 @@ case $opt in
 7) user_tools ;;
 8) mc_tools ;;
 9) panel_menu ;;
-0) echo "👋 Exit"; exit ;;
+0) exit 0 ;;
 *) err "Invalid option" ;;
 esac
 
