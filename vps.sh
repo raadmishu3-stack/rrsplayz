@@ -55,32 +55,12 @@ while true; do
 header
 echo "🧩 BLUEPRINT MENU"
 echo "1) blueannoucements"
-echo "2) eggchanger"
-echo "3) huxregister"
-echo "4) mclogs"
-echo "5) nightadmin"
-echo "6) serverbackgrounds"
-echo "7) serverimporter"
-echo "8) snowflakes"
-echo "9) startupchanger"
-echo "10) subdomains"
-echo "11) versionchanger"
 echo "0) Back"
 
 read -p "Select: " b
 
 case $b in
 1) install_bp "blueannoucements" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/blueannoucements.blueprint" ;;
-2) install_bp "eggchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/eggchanger.blueprint" ;;
-3) install_bp "huxregister" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/huxregister.blueprint" ;;
-4) install_bp "mclogs" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/mclogs.blueprint" ;;
-5) install_bp "nightadmin" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/nightadmin.blueprint" ;;
-6) install_bp "serverbackgrounds" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/serverbackgrounds.blueprint" ;;
-7) install_bp "serverimporter" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/serverimporter.blueprint" ;;
-8) install_bp "snowflakes" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/snowflakes.blueprint" ;;
-9) install_bp "startupchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/startupchanger.blueprint" ;;
-10) install_bp "subdomains" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/subdomains.blueprint" ;;
-11) install_bp "versionchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/versionchanger.blueprint" ;;
 0) break ;;
 *) err "Invalid" ;;
 esac
