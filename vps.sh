@@ -1,215 +1,123 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# ==========================================
+#    🚀RRSOFFICIALS
+# ==========================================
 
-BASE="$HOME/rrs9"
+set -u
 
-# ========= COLORS =========
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[1;34m'
-PURPLE='\033[1;35m'
-CYAN='\033[1;36m'
-WHITE='\033[1;37m'
-NC='\033[0m'
+# --- ANSI COLORS ---
+C=$'\033[36m'  # Cyan
+G=$'\033[32m'  # Green
+R=$'\033[31m'  # Red
+B=$'\033[34m'  # Blue
+Y=$'\033[33m'  # Yellow
+W=$'\033[97m'  # White
+N=$'\033[0m'   # Reset
 
-ok(){ echo -e "${GREEN}✔ $1${NC}"; }
-err(){ echo -e "${RED}✖ $1${NC}"; }
-pause(){ read -p "👉 Press Enter..." ; }
-
-header(){
-clear
-echo -e "${PURPLE}"
-echo "╔══════════════════════════════════════╗"
-echo "║        👑 RRS 9 ROYAL PANEL 👑       ║"
-echo "╚══════════════════════════════════════╝"
-echo -e "${NC}"
+# --- HEADER FUNCTION ---
+header() {
+    clear
+    echo -e "${B} ${N}"╔══════════════════════════════════════╗
+    echo -e "${B} ${N}"║  **:crown: RRS 9 ROYAL PANEL :crown:       ║"**
+    echo -e "${B} ${N}"╚══════════════════════════════════════╝
+    echo -e "${B} ${N}"
+    echo -e "${B} ${N}"
+    echo -e "${B}=====================================================${N}"
+    echo -e "${Y}      🚀 Subscribe To RRplayz64      ${N}"
+    echo -e "${B}=====================================================${N}"
+    echo ""
 }
 
-# ========= BLUEPRINT =========
-bp_check(){ command -v blueprint >/dev/null 2>&1; }
-
-install_bp(){
-bp_check || { err "Blueprint not installed"; return; }
-
-name="$1"
-url="$2"
-file="/tmp/$name.blueprint"
-
-wget -q "$url" -O "$file"
-
-if [ -f "$file" ]; then
-blueprint -install "$file" >/dev/null 2>&1
-ok "$name Installed"
-rm -f "$file"
-else
-err "$name Failed"
-fi
+# --- PAUSE FUNCTION ---
+pause() {
+    echo ""
+    read -p "${W}Press [Enter] to return to menu...${N}" dummy
 }
 
-blueprint_menu(){
+# --- MAIN LOOP ---
 while true; do
-header
-echo -e "${CYAN}🧩 BLUEPRINT MENU${NC}"
-echo -e "${YELLOW}1) blueannoucements"
-echo "2) eggchanger"
-echo "3) huxregister"
-echo "4) mclogs"
-echo "5) nightadmin"
-echo "6) serverbackgrounds"
-echo "7) serverimporter"
-echo "8) snowflakes"
-echo "9) startupchanger"
-echo "10) subdomains"
-echo "11) versionchanger"
-echo -e "0) Back${NC}"
+    header
+    echo -e "${C} 1) ${W}Dependency Installer ${G}(Node + Mineflayer)${N}"
+    echo -e "${C} 2) ${W}Bot Maker ${G}(Create app.js)${N}"
+    echo -e "${C} 3) ${W}Auto Restarter Setup ${G}(Systemd Service)${N}"
+    echo -e "${C} 4) ${W}Bot Remover ${G}(Manager)${N}"
+    echo -e "${C} 5) ${W}Discord Server Link${N}"
+    echo -e "${C} 6) ${W}YouTube Channel Link${N}"
+    echo -e "${C} 7) ${W}VM Installer ${G}(IDX VPS)${N}"
+    echo -e "${C} 8) ${W}RDP Installer ${G}(Desktop Environment)${N}"
+    echo -e "${C} 9) ${W}Tailscale Installer ${G}(VPN)${N}"
+    echo -e "${R} 10) Exit${N}"
+    echo ""
+    echo -e "${B}=====================================================${N}"
+    read -p "${Y}👉 Select an option [1-10]: ${N}" choice
 
-read -p "👉 Select: " b
-
-case $b in
-1) install_bp "blueannoucements" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/blueannoucements.blueprint" ;;
-2) install_bp "eggchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/eggchanger.blueprint" ;;
-3) install_bp "huxregister" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/huxregister.blueprint" ;;
-4) install_bp "mclogs" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/mclogs.blueprint" ;;
-5) install_bp "nightadmin" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/nightadmin.blueprint" ;;
-6) install_bp "serverbackgrounds" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/serverbackgrounds.blueprint" ;;
-7) install_bp "serverimporter" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/serverimporter.blueprint" ;;
-8) install_bp "snowflakes" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/snowflakes.blueprint" ;;
-9) install_bp "startupchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/startupchanger.blueprint" ;;
-10) install_bp "subdomains" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/subdomains.blueprint" ;;
-11) install_bp "versionchanger" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/versionchanger.blueprint" ;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-
-pause
+    case $choice in
+        1)
+            echo ""
+            echo -e "${Y}🔄 Running Dependency Installer...${N}"
+            curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/refs/heads/main/dependency.sh | sed 's/\r$//' | bash
+            pause
+            ;;
+        2)
+            echo ""
+            echo -e "${Y}🛠️  Running Bot Maker...${N}"
+            curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/refs/heads/main/bot_maker.sh | sed 's/\r$//' | bash
+            pause
+            ;;
+        3)
+            echo ""
+            echo -e "${Y}⚙️  Setting up Auto Restarter...${N}"
+            curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/refs/heads/main/autorestarter.sh | sed 's/\r$//' | bash
+            pause
+            ;;
+        4)
+            echo ""
+            echo -e "${Y}🚀 Bot Remover...${N}"
+            curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/refs/heads/main/bot_remover.sh | sed 's/\r$//' | bash
+            pause
+            ;;
+        5)
+            echo ""
+            echo -e "${B}📢 Join our Discord Server:${N}"
+            echo -e "${G}🔗 https://discord.gg/ZAAyrb4J6s${N}"
+            echo ""
+            pause
+            ;;
+        6)
+            echo ""
+            echo -e "${R}📺 Subscribe to YouTube:${N}"
+            echo -e "${Y}🔗 https://www.youtube.com/@OfficialNotGamerPie${N}"
+            echo ""
+            pause
+            ;;
+        7)
+            echo ""
+            echo -e "${Y}💻 Installing VM (IDX VPS)...${N}"
+            bash <(curl -fsSL https://raw.githubusercontent.com/raadmishu3-stack/yt1/refs/heads/main/vps.sh)
+            pause
+            ;;
+        8)
+            echo ""
+            echo -e "${Y}🖥️  Installing RDP...${N}"
+            curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/rdp_installer.sh | sed 's/\r$//' | bash
+            pause
+            ;;
+        9)
+            echo ""
+            echo -e "${Y}🌐 Installing Tailscale VPN...${N}"
+            curl -fsSL https://tailscale.com/install.sh | sh
+            pause
+            ;;
+        10)
+            echo ""
+            echo -e "${G}👋 Exiting... Thanks for using!${N}"
+            exit 0
+            ;;
+        *)
+            echo ""
+            echo -e "${R}❌ Invalid Option! Please select between 1-10.${N}"
+            sleep 2
+            ;;
+    esac
 done
-}
-
-# ========= MC TOOLS =========
-mc_menu(){
-while true; do
-header
-echo -e "${GREEN}🎮 MC TOOLS MENU${NC}"
-echo "1) Install ALL"
-echo "0) Back"
-
-read -p "👉 Select: " m
-
-case $m in
-1)
-for t in eggchanger huxregister mclogs nightadmin serverbackgrounds serverimporter snowflakes startupchanger subdomains versionchanger; do
-install_bp "$t" "https://raw.githubusercontent.com/DreamHost2ws/blueprients/main/$t.blueprint"
-done
-ok "ALL MC TOOLS INSTALLED"
-;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-
-pause
-done
-}
-
-# ========= PTERODACTYL =========
-panel_menu(){
-while true; do
-header
-echo -e "${BLUE}🩺 PTERODACTYL PANEL + WINGS${NC}"
-echo "1) 🚀 Install Panel (UI)"
-echo "2) 🪽 Install Wings"
-echo "3) 🗑 Uninstall"
-echo "0) Back"
-
-read -p "👉 Select: " p
-
-case $p in
-1)
-echo -e "${CYAN}Starting PTERO INSTALLER...${NC}"
-bash <(curl -s https://pterodactyl-installer.se)
-;;
-2)
-bash <(curl -s https://pterodactyl-installer.se) wings
-;;
-3)
-bash <(curl -s https://pterodactyl-installer.se) uninstall
-;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-
-pause
-done
-}
-
-# ========= TAILSCALE =========
-tailscale_menu(){
-while true; do
-header
-echo -e "${YELLOW}🔗 TAILSCALE MENU${NC}"
-echo "1) Install"
-echo "2) Connect"
-echo "3) Remove"
-echo "0) Back"
-
-read -p "👉 Select: " t
-
-case $t in
-1) curl -fsSL https://tailscale.com/install.sh | sh && ok "Installed" ;;
-2) tailscale up && ok "Connected" ;;
-3) rm -f /usr/bin/tailscale && ok "Removed" ;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-
-pause
-done
-}
-
-# ========= THEME =========
-theme_menu(){
-while true; do
-header
-echo -e "${PURPLE}🎨 THEME MENU${NC}"
-echo "1) 🌑 Dark"
-echo "2) 💜 Neon"
-echo "3) 👑 Royal"
-echo "0) Back"
-
-read -p "👉 Select: " th
-
-case $th in
-1) echo "dark" > "$BASE/theme.txt" && ok "Dark Applied" ;;
-2) echo "neon" > "$BASE/theme.txt" && ok "Neon Applied" ;;
-3) echo "royal" > "$BASE/theme.txt" && ok "Royal Applied" ;;
-0) break ;;
-*) err "Invalid" ;;
-esac
-
-pause
-done
-}
-
-# ========= MAIN =========
-while true; do
-header
-echo -e "${CYAN}1) 🧩 Blueprint"
-echo "2) 🎮 MC Tools"
-echo "3) 🩺 Pterodactyl Panel"
-echo "4) 🔗 Tailscale"
-echo "5) 🎨 Theme"
-echo -e "0) ❌ Exit${NC}"
-
-read -p "👉 Select: " o
-
-case $o in
-1) blueprint_menu ;;
-2) mc_menu ;;
-3) panel_menu ;;
-4) tailscale_menu ;;
-5) theme_menu ;;
-0) exit ;;
-*) err "Invalid Option" ;;
-esac
-
-pause
-done
+EOF
