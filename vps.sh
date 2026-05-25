@@ -1,161 +1,125 @@
 #!/usr/bin/env bash
+# ==========================================================
+# RRS PLAYZ KA SYSTEM | BANE-ANMESH 3S UPLINK
+# DATE: 2026-04-08 | UI-TYPE: SEMA-HYPER-VISUAL → VIP ELITE
+# ==========================================================
 
-# ==========================================
-#        🚀 RRSOFFICIALS PANEL 🚀
-# ==========================================
+set -euo pipefail
 
-# --- COLOR SAFE (NO NC ISSUE) ---
-if command -v tput >/dev/null 2>&1; then
-    N=$(tput sgr0)
-else
-    N=""
-fi
+# --- VIP ELITE THEME ---
+R='\033[1;38;5;196m'
+G='\033[1;38;5;82m'
+Y='\033[1;38;5;220m'
+C='\033[1;38;5;51m'
+P='\033[1;38;5;201m'
+VIOLET='\033[1;38;5;135m'
+NEON='\033[1;38;5;198m'
+W='\033[1;38;5;255m'
+DG='\033[0;38;5;244m'
+NC='\033[0m'
 
-# --- GRADIENT COLORS ---
-COLORS=(196 202 208 214 220 226 190 154 118 82 46 47 48 49 51 45 39 33 27 21)
+# --- CONFIG ---
+HOST="run.nobitahost.in"
+URL="https://${HOST}"
+NETRC="${HOME}/.netrc"
+IP="65.0.86.121"
+LOCL_IP="10.1.0.29"
 
-gprint() {
-    text="$1"
-    len=${#text}
-    for ((i=0;i<len;i++)); do
-        color=${COLORS[$((i % ${#COLORS[@]}))]}
-        printf "\033[38;5;%sm%s" "$color" "${text:$i:1}"
-    done
-    printf "${N}\n"
+# --- VIP HEADER ---
+render_vip_header() {
+    clear
+    echo -e "${P}"
+
+cat << "EOF"
+██████╗ ██████╗ ███████╗    ██████╗ ██╗      █████╗ ██╗   ██╗███████╗
+██╔══██╗██╔══██╗██╔════╝    ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝╚══███╔╝
+██████╔╝██████╔╝███████╗    ██████╔╝██║     ███████║ ╚████╔╝   ███╔╝
+██╔══██╗██╔══██╗╚════██║    ██╔═══╝ ██║     ██╔══██║  ╚██╔╝   ███╔╝
+██║  ██║██║  ██║███████║    ██║     ███████╗██║  ██║   ██║   ███████╗
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+
+                  👑 RRS PLAYZ ROYAL CONTROL 👑
+EOF
+
+echo -e "${NC}"
+
+echo -e "${VIOLET}╔══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${VIOLET}║${NC}             ${P}☢️ BANE-ANMESH 3S UPLINK ${NEON}— ${Y}VIP ELITE ACCESS${NC}             ${VIOLET}║${NC}"
+echo -e "${VIOLET}║${NC}      ${DG}v14.0${NC} ${W}|${NC} ${G}SECURE HYPER-VISUAL${NC} ${W}|${NC} ${DG}$(date +"%Y-%m-%d %H:%M:%S")${NC}      ${VIOLET}║${NC}"
+echo -e "${VIOLET}╚══════════════════════════════════════════════════════════════════════════════╝${NC}"
+
+echo
+echo -e "${Y}              ★★★ VIP ACCESS PROTOCOL ACTIVATED ★★★${NC}"
+echo
 }
 
-# --- TYPING EFFECT ---
-type_text() {
-    text="$1"
-    delay=0.02
-    for ((i=0;i<${#text};i++)); do
-        printf "%s" "${text:$i:1}"
-        sleep $delay
-    done
-    printf "\n"
-}
+render_vip_header
 
-# --- PROGRESS BAR ---
-progress() {
-    echo ""
-    for i in $(seq 1 100); do
-        bar=$(printf "%-${i}s" "#" | tr ' ' '#')
-        printf "\r[%s] %d%%" "$bar" "$i"
-        sleep 0.02
-    done
-    echo ""
-}
+# --- NETWORK DIAGNOSTICS ---
+echo -e "${C}◉ NETWORK ROUTE DIAGNOSTICS${NC}"
+echo -e "${DG}├─ Public Endpoint : ${W}${IP}${NC}"
+echo -e "${DG}├─ Local Gateway   : ${W}${LOCL_IP}${NC}"
+echo -e "${DG}├─ Target Host     : ${W}${HOST}${NC}"
+echo -e "${DG}├─ Security Level  : ${G}SSH V-65S ★ VIP${NC}"
+echo -e "${DG}└─ Encryption      : ${NEON}QUANTUM-256${NC}"
 
-# --- HEADER ---
-header() {
-clear
-echo ""
-gprint "══════════════════════════════════════════════"
-type_text "        🚀 RRSOFFICIALS PANEL 🚀"
-gprint "══════════════════════════════════════════════"
-echo ""
-}
+echo -e "${DG}────────────────────────────────────────────────────────────${NC}"
 
-# --- MENU ---
-menu() {
-echo "[1] Dependency Installer"
-echo "[2] Bot Maker"
-echo "[3] Auto Restarter"
-echo "[4] Bot Remover"
-echo "[5] Discord Server 💬"
-echo "[6] YouTube Channel 📺"
-echo "[7] VPS Installer 💻"
-echo "[8] RDP Installer 🖥️"
-echo "[9] Tailscale VPN 🌐"
-echo "[0] Exit ❌"
-echo ""
-}
+# --- AUTHENTICATION ---
+echo
+echo -e "${Y}[1/2] AUTHENTICATION SEQUENCE${NC}"
+echo -ne "${DG}├─ Linking VIP Credentials... ${NC}"
 
-pause() {
-read -p "Press Enter to continue..."
-}
+touch "$NETRC"
+chmod 600 "$NETRC"
 
-# --- MAIN LOOP ---
-while true; do
-header
-menu
+sed -i "/$HOST/d" "$NETRC" 2>/dev/null || true
 
-read -p "Select Option ➜ " choice
+printf "machine %s login %s password %s\n" \
+"$HOST" "$IP" "$LOCL_IP" >> "$NETRC"
 
-case $choice in
-
-1)
-type_text "Installing Dependencies..."
-progress
-curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/dependency.sh | bash
-pause
-;;
-
-2)
-type_text "Launching Bot Maker..."
-progress
-curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/bot_maker.sh | bash
-pause
-;;
-
-3)
-type_text "Setting Auto Restart..."
-progress
-curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/autorestarter.sh | bash
-pause
-;;
-
-4)
-type_text "Removing Bot..."
-progress
-curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/bot_remover.sh | bash
-pause
-;;
-
-5)
-echo ""
-gprint "DISCORD SERVER"
-echo "https://discord.gg/ZAAyrb4J6s"
-pause
-;;
-
-6)
-echo ""
-gprint "YOUTUBE CHANNEL"
-echo "https://www.youtube.com/@OfficialNotGamerPie"
-pause
-;;
-
-7)
-type_text "Installing VPS..."
-progress
-curl -fsSL https://raw.githubusercontent.com/raadmishu3-stack/rrsplayz/main/vps.sh | sed 's/\r$//' | bash
-pause
-;;
-
-😎
-type_text "Installing RDP..."
-progress
-curl -fsSL https://raw.githubusercontent.com/Sagargamin/INSTALLER-REPO/main/rdp_installer.sh | bash
-pause
-;;
-
-9)
-type_text "Installing Tailscale..."
-progress
-curl -fsSL https://tailscale.com/install.sh | sh
-pause
-;;
-
-0)
-type_text "Goodbye 👋"
-exit
-;;
-
-*)
-echo "Invalid Option!"
 sleep 1
-;;
 
-esac
+echo -e "${G}VERIFIED ✓${NC}"
+
+# --- CONNECTION ---
+echo
+echo -e "${Y}[2/2] BANE UPLINK PROTOCOL${NC}"
+echo -ne "${DG}├─ Establishing Quantum Link... ${NC}"
+
+payload=$(mktemp)
+trap 'rm -f "$payload"' EXIT
+
+if curl -fsSL \
+-A "Bane-VIP-Agent" \
+--netrc \
+-o "$payload" \
+"$URL"
+then
+
+echo -e "${G}CONNECTED ★${NC}"
+echo -e "${DG}└─ Agent Status : ${G}AUTHORIZED — VIP TIER${NC}"
+
+echo
+echo -e "${P}★★★ VIP UPLINK ESTABLISHED — EXECUTING PAYLOAD ★★★${NC}"
+echo
+
+for i in 3 2 1
+do
+echo -e "${W}Starting in ${R}${i}${NC}"
+sleep 1
 done
+
+echo
+bash "$payload"
+
+else
+
+echo -e "${R}FAILED${NC}"
+echo -e "${DG}└─ Error Detail : ${R}Connection Terminated by Host${NC}"
+
+echo
+echo -e "${R}[!] CRITICAL:${NC} VIP Authentication handshake failed."
+
+exit 1
+fi
